@@ -1,0 +1,35 @@
+name: Build PrismSynth VST3 (Windows)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install CMake
+        uses: lukka/get-cmake@latest
+
+      - name: Get JUCE
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/juce-framework/JUCE.git "$env:RUNNER_TEMP\JUCE"
+
+      - name: Configure
+        run: cmake -S . -B build -DJUCE_DIR="$env:RUNNER_TEMP\JUCE" -A x64
+
+      - name: Build VST3
+        run: cmake --build build --config Release --parallel
+
+      - name: Upload VST3 bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: PrismSynth-Windows-VST3
+          path: build/**/PrismSynth.vst3/**
+          if-no-files-found: error
+          retention-days: 14
