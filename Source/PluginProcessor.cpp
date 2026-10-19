@@ -43,8 +43,8 @@ public:
         const double sr = getSampleRate();
         const float cutoff = *cutoffParam;
         const float tone = *toneParam;
-        const float attack = juce::jmax (0.001f, *attackParam);
-        const float release = juce::jmax (0.02f, *releaseParam);
+        const float attack = juce::jmax (0.001f, attackParam->load());
+        const float release = juce::jmax (0.02f, releaseParam->load());
         const float detune = *detuneParam;
         const float gain = *gainParam;
         const float ratio = 1.0f + detune * 0.012f;
